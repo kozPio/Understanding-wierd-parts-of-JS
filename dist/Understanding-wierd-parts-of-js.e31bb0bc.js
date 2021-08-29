@@ -120,36 +120,41 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 })({"index.js":[function(require,module,exports) {
 //import { greet } from "./functons";
 //import { b } from "./this"
-function greet(firstName, lastName, language) {
-  language = language || 'en';
+var // person fisrt Name
+firstName, // person LastName
+lastName, // langiuage
+language;
+var person = {
+  //first Name
+  firstName: "John",
+  //last name
+  lastName: "Doe"
+};
+console.log(person);
 
-  if (language === 'en') {
-    console.log("hello " + firstName + ' ' + lastName);
-  }
-
-  if (language === 'es') {
-    console.log("hola " + firstName + ' ' + lastName);
-  }
+function greet(name) {
+  console.log("hello " + name);
 }
 
-function greetEnlish(firstName, lastName) {
-  greet(firstName, lastName);
-}
+greet("Adam");
 
-function greetSpanish(firstName, lastName) {
-  greet(firstName, lastName, 'es');
-}
+var greetFunc = function greetFunc(name) {
+  console.log("hello " + name);
+};
 
-greetEnlish("john", "Doe");
-greetSpanish("john", "Doe", "es");
+greetFunc("Adam"); // (IIFE) using an imidiatly invoked function expression
 
-function getPerson() {
-  return {
-    firstName: "Tony"
-  };
-}
+var greeting = function (name) {
+  return "hello " + name;
+}("John");
 
-console.log(getPerson());
+console.log(greeting);
+var name = "Alice";
+
+(function (name) {
+  var greeting = "Hello ";
+  console.log(greeting + name);
+})(name); //IIFE
 },{}],"C:/Users/pitrx/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -178,7 +183,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60673" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58407" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -355,4 +360,4 @@ function hmrAcceptRun(bundle, id) {
   }
 }
 },{}]},{},["C:/Users/pitrx/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","index.js"], null)
-//# sourceMappingURL=/Understanding-wierd-parts-of-js.e31bb0bc.js.map
+//# sourceMappingURL=/Understanding-wierd-parts-of-JS.e31bb0bc.js.map

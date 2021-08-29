@@ -2,36 +2,48 @@
 //import { b } from "./this"
 
 
-function greet(firstName, lastName, language) {
-  language = language || 'en';
+let 
+// person fisrt Name
+firstName, 
+// person LastName
+lastName, 
+// langiuage
+language;
 
-  if (language === 'en') {
-    console.log("hello " + firstName + ' ' + lastName);
-  }
 
-  if (language === 'es') {
-    console.log("hola " + firstName + ' ' + lastName);
-  }
+let person = {
+  //first Name
+  firstName: "John",
+  //last name
+  lastName: "Doe"
 }
 
+console.log(person)
 
-function greetEnlish(firstName, lastName) {
-  greet(firstName, lastName);
+
+function greet(name) {
+  console.log("hello " + name)
 }
 
-function greetSpanish(firstName, lastName) {
-  greet(firstName, lastName, 'es');
+greet("Adam");
+
+var greetFunc = function(name){
+  console.log("hello " + name)
 }
 
-greetEnlish("john", "Doe");
-greetSpanish("john", "Doe", "es");
+greetFunc("Adam");
+
+// (IIFE) using an imidiatly invoked function expression
+var greeting = function(name){
+  return "hello " + name;
+}("John");
+
+console.log(greeting);
 
 
-function getPerson() {
+let name = "Alice";
 
-  return {
-    firstName: "Tony"
-  }
-}
-
-console.log(getPerson())
+(function(name) {
+  let greeting = "Hello "
+  console.log(greeting + name);
+}(name)); //IIFE
