@@ -117,56 +117,49 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"index.js":[function(require,module,exports) {
-//import { greet } from "./functons";
-//import { b } from "./this"
-function greet(whattosay) {
-  return function (name) {
-    console.log(whattosay + ' ' + name);
-  };
+})({"IIFE.js":[function(require,module,exports) {
+var global = arguments[3];
+var greetings = "hola"; // in the seperate file that is included in the index.html scripts
+
+var // person fisrt Name
+firstName, // person LastName
+lastName, // langiuage
+language;
+var person = {
+  //first Name
+  firstName: "John",
+  //last name
+  lastName: "Doe"
+};
+console.log(person);
+
+function greet(name) {
+  console.log("hello " + name);
 }
 
-;
-var sayHi = greet("Hi");
-sayHi("Tony");
+greet("Adam");
 
-function buildFunctions() {
-  var arr = [];
+var greetFunc = function greetFunc(name) {
+  console.log("hello " + name);
+};
 
-  for (var i = 0; i < 3; i++) {
-    //let x = i;
-    arr.push(function (j) {
-      return function () {
-        console.log(j);
-      };
-    }(i));
-  }
+greetFunc("Adam"); // (IIFE) using an imidiatly invoked function expression
 
-  return arr;
-}
+var greeting = function (name) {
+  return "hello " + name;
+}("John");
 
-;
-var fs = buildFunctions();
-fs[0]();
-fs[1]();
-fs[2]();
+console.log(greeting);
+var name = "Alice";
 
-function makeGreeting(language) {
-  return function greet(firstName, lastName) {
-    if (language === 'en') {
-      console.log("hello " + firstName + ' ' + lastName);
-    }
+(function (global, name) {
+  var greetings = "Hello ";
+  global.greetings = "heyyo";
+  console.log(greetings + name);
+})(window, name); //IIFE
 
-    if (language === 'es') {
-      console.log("hola " + firstName + ' ' + lastName);
-    }
-  };
-}
 
-var greetEnlish = makeGreeting('en');
-var greetSpanish = makeGreeting('es');
-greetEnlish("john", "Doe");
-greetSpanish("john", "Doe");
+console.log(greetings);
 },{}],"C:/Users/pitrx/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -371,5 +364,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["C:/Users/pitrx/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","index.js"], null)
-//# sourceMappingURL=/Understanding-wierd-parts-of-JS.e31bb0bc.js.map
+},{}]},{},["C:/Users/pitrx/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","IIFE.js"], null)
+//# sourceMappingURL=/IIFE.e0617781.js.map

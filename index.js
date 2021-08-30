@@ -1,49 +1,63 @@
 //import { greet } from "./functons";
 //import { b } from "./this"
 
-
-let 
-// person fisrt Name
-firstName, 
-// person LastName
-lastName, 
-// langiuage
-language;
+function greet(whattosay) {
+  return function(name) {
+    console.log(whattosay + ' ' + name)
+  }
+};
 
 
-let person = {
-  //first Name
-  firstName: "John",
-  //last name
-  lastName: "Doe"
+var sayHi = greet("Hi");
+
+
+sayHi("Tony");
+
+
+function buildFunctions() {
+
+  var arr = [];
+
+  for(var i =0; i < 3; i++){
+    //let x = i;
+    arr.push(
+      (function(j) {  
+        return function(){
+          console.log(j);
+        }  
+      })(i)
+    )
+  }
+
+  return arr;
+};
+
+
+
+var fs = buildFunctions();
+
+
+fs[0]();
+fs[1]();
+fs[2]();
+
+
+function makeGreeting(language) {
+   return function greet(firstName, lastName){
+
+    if (language === 'en') {
+      console.log("hello " + firstName + ' ' + lastName);
+    }
+  
+    if (language === 'es') {
+      console.log("hola " + firstName + ' ' + lastName);
+    }
+   }
 }
 
-console.log(person)
 
+var greetEnlish = makeGreeting('en');
+var greetSpanish = makeGreeting('es');
 
-function greet(name) {
-  console.log("hello " + name)
-}
-
-greet("Adam");
-
-var greetFunc = function(name){
-  console.log("hello " + name)
-}
-
-greetFunc("Adam");
-
-// (IIFE) using an imidiatly invoked function expression
-var greeting = function(name){
-  return "hello " + name;
-}("John");
-
-console.log(greeting);
-
-
-let name = "Alice";
-
-(function(name) {
-  let greeting = "Hello "
-  console.log(greeting + name);
-}(name)); //IIFE
+greetEnlish("john", "Doe");
+greetSpanish("john", "Doe");
