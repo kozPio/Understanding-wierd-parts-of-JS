@@ -1,52 +1,53 @@
 //import { greet } from "./functons";
 //import { b } from "./this"
 
-function mapForEach(arr, fnc) {
-  var newArr= [];
-
-  for(var i = 0 ; i < arr.length; i++){
-    newArr.push(
-      fnc(arr[i])
-    );
+var person = {
+  firstName: "Default",
+  lastName: "Default",
+  getFullName: function() {
+    fullName = this.firstName + ' ' + this.lastName;
+    return fullName;
   }
+};
 
-  return newArr
-}
-
-
-var arr1 = [1,2,3];
-console.log(arr1);
-
-
-var arr2= mapForEach(arr1, function(item) {
-  return item * 3
-})
+var john = {
+  firstName: "John",
+  lastName: "Doe",
+};
 
 
-function muliplyByTen(num){
-  return num * 10
-}
+//never do
+john.__proto__ = person;
+console.log(john.getFullName());
+console.log(john.firstName);
 
-console.log(arr2);
+var jane = {
+  adress: "11 OkStreet",
+  getFullName: function() {
+    fullName = this.firstName + ' ' + this.lastName;
+    return fullName;
+  }
+};
 
-console.log(mapForEach(arr1, muliplyByTen ));
+// jane.__proto__ = person;
+
+// console.log(jane.getFullName());
 
 
-var arr3= mapForEach(arr1, function(item) {
-  return item > 2 ? item : null
-})
+var a = {};
+var b = function(){};
+var c = [];
 
-console.log(arr3);
+for (var prop in john) {
+  if(john.hasOwnProperty(prop)){
+    console.log(prop + ": " + john[prop]);
+  }
+  
+};
 
-function checkLimiter( limiter, item) {
-  console.log(item)
-  return item > limiter
-}
-
-function check(limiter){
-  return checkLimiter.bind(this, limiter);
-} 
-
-arr4 = mapForEach(arr2, check(5));
-
-console.log(arr4)
+var jim = {
+ 
+  getFirstName: function() {
+    return this.firstName ;
+  }
+};

@@ -120,44 +120,49 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 })({"index.js":[function(require,module,exports) {
 //import { greet } from "./functons";
 //import { b } from "./this"
-function mapForEach(arr, fnc) {
-  var newArr = [];
-
-  for (var i = 0; i < arr.length; i++) {
-    newArr.push(fnc(arr[i]));
+var person = {
+  firstName: "Default",
+  lastName: "Default",
+  getFullName: function getFullName() {
+    fullName = this.firstName + ' ' + this.lastName;
+    return fullName;
   }
+};
+var john = {
+  firstName: "John",
+  lastName: "Doe"
+}; //never do
 
-  return newArr;
+john.__proto__ = person;
+console.log(john.getFullName());
+console.log(john.firstName);
+var jane = {
+  adress: "11 OkStreet",
+  getFullName: function getFullName() {
+    fullName = this.firstName + ' ' + this.lastName;
+    return fullName;
+  }
+}; // jane.__proto__ = person;
+// console.log(jane.getFullName());
+
+var a = {};
+
+var b = function b() {};
+
+var c = [];
+
+for (var prop in john) {
+  if (john.hasOwnProperty(prop)) {
+    console.log(prop + ": " + john[prop]);
+  }
 }
 
-var arr1 = [1, 2, 3];
-console.log(arr1);
-var arr2 = mapForEach(arr1, function (item) {
-  return item * 3;
-});
-
-function muliplyByTen(num) {
-  return num * 10;
-}
-
-console.log(arr2);
-console.log(mapForEach(arr1, muliplyByTen));
-var arr3 = mapForEach(arr1, function (item) {
-  return item > 2 ? item : null;
-});
-console.log(arr3);
-
-function checkLimiter(limiter, item) {
-  console.log(item);
-  return item > limiter;
-}
-
-function check(limiter) {
-  return checkLimiter.bind(this, limiter);
-}
-
-arr4 = mapForEach(arr2, check(5));
-console.log(arr4);
+;
+var jim = {
+  getFirstName: function getFirstName() {
+    return this.firstName;
+  }
+};
 },{}],"C:/Users/pitrx/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
