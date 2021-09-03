@@ -1,62 +1,48 @@
 //import { greet } from "./functons";
 //import { b } from "./this";
+// "use strict";
 
-
-
-function Person(firstName, lastName) {
-  console.log(this)
-  this.firstName = firstName;
-  this.lastName = lastName;
-
-  console.log("This function is invoked")
-}
-
-Person.prototype.getFullName = function () {
-  return this.firstName + " " + this.lastName
-}
-
-var john = new Person("John", "Doe");
-
-console.log(john)
-
-var jane = new Person("Jane", "Doe");
-
-
-console.log(jane.getFullName());
-console.log(jane)
-
-Array.prototype.MyNewFeature = 'cool'
-
-var arr = ['John', "Jane", "Jim"];
-
-
-for(let prop in arr){
-  console.log(prop+ ': '+ arr[prop])
-};
-
-// pollyfil
-if(!Object.create) {
-  Object.create = function(o) {
-    if( arguments.length > 1) {
-      throw new Error('Object.create implementation' + "Only accepts the first parameter")
-    }
-
-    function F(){
-      F.prototype =o;
-      return new F();
-    }
-  }
-}
-
-var person = {
-  firstName: "Deafult",
-  lastName: "Deafult",
+let people = [{
+  //the John object
+  firstName: "John",
+  lastName: "Doe",
+  addresses: [
+    '12 ocland st',
+    '14 portland'
+  ]
+},
+{
+  //the Jane object
+  firstName: "Jane",
+  lastName: "Doe",
+  addresses: [
+    '14 ocland st',
+    '18 portland'
+  ],
   greet: function(){
-    return "Hi " + this.firstName
+    return 'Hi ' + this.firstName
   }
-}
 
-var jake = Object.create(person);
-jake.firstName = "Jake";
-jake.lastName = "Doe";
-console.log(jake)
+}];
+
+console.log(people);
+
+
+var person;
+
+persom = {};
+
+console.log(persom)
+
+// function logNewPersonn(){
+//   "use strict";
+//   let person2;
+//   persom2 =  {}
+//   console.timeLog(persom2)
+// }
+
+// logNewPersonn();
+
+
+var q = $("ul.people li");
+console.log(q)
