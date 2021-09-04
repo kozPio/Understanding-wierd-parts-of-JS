@@ -1,0 +1,1 @@
+{"version":3,"sources":["app.js"],"names":["g","G$","console","log"],"mappings":"AAAC,IAAIA,CAAC,GAAGC,EAAE,CAAC,MAAD,EAAU,KAAV,CAAV;AAEAC,OAAO,CAACC,GAAR,CAAYH,CAAZ","file":"app.c328ef1a.js","sourceRoot":"..","sourcesContent":[" var g = G$(\"John\" , \"Doe\");\r\n\r\n console.log(g)"]}

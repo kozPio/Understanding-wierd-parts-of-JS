@@ -44,5 +44,5 @@ console.log(persom)
 // logNewPersonn();
 
 
-var q = $("ul.people li");
+var q = $("ul.people li").addClass("newClass").removeClass("people");
 console.log(q)
