@@ -119,21 +119,23 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   return newRequire;
 })({"Greeter.js":[function(require,module,exports) {
 var global = arguments[3];
+;
+
 (function (global, $) {
   var Greeter = function Greeter(firstName, lastName, language) {
     return new Greeter.init(firstName, lastName, language);
   };
 
   var supportedLanguages = ["en", "es"];
-  var greeting = {
+  var greetings = {
     en: "Hello",
     es: "Hola"
   };
-  var formalGreeting = {
+  var formalGreetings = {
     en: "Greetings",
     es: "Saludos"
   };
-  var loggMessage = {
+  var loggMessages = {
     en: "Logged in",
     es: "incion session"
   };
@@ -145,6 +147,58 @@ var global = arguments[3];
       if (supportedLanguages.indexOf(this.language) === -1) {
         throw "  Invalid language";
       }
+    },
+    greeting: function greeting() {
+      return greetings[this.language] + ' ' + this.firstName + '!';
+    },
+    formalGreeting: function formalGreeting() {
+      return formalGreetings[this.language] + ', ' + this.fullName();
+    },
+    greet: function greet(formal) {
+      var msg;
+
+      if (formal) {
+        msg = this.formalGreeting();
+      } else {
+        msg = this.greeting();
+      }
+
+      if (console) {
+        console.log(msg);
+      }
+
+      return this;
+    },
+    log: function log() {
+      if (console) {
+        console.log(loggMessages[this.language] + ": " + this.fullName());
+        return this;
+      }
+    },
+    setLang: function setLang(lang) {
+      this.language = lang;
+      this.validate();
+      return this;
+    },
+    HtmlGreeting: function HtmlGreeting(selector, formal) {
+      if (!$) {
+        throw "no jquery";
+      }
+
+      if (!selector) {
+        throw "Missing a selector";
+      }
+
+      var msg;
+
+      if (formal) {
+        msg = this.formalGreeting();
+      } else {
+        msg = this.greeting();
+      }
+
+      $(selector).html(msg);
+      return this;
     }
   };
 
@@ -153,6 +207,7 @@ var global = arguments[3];
     self.firstName = firstName || "John";
     self.lastName = lastName || "Doe";
     self.language = language || "en";
+    self.validate();
   };
 
   Greeter.init.prototype = Greeter.prototype;
@@ -186,7 +241,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55416" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61311" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
