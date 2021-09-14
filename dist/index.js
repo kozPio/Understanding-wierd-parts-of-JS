@@ -117,103 +117,74 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"Greeter.js":[function(require,module,exports) {
-var global = arguments[3];
-;
+})({"C:/Users/pitrx/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
+var bundleURL = null;
 
-(function (global, $) {
-  var Greeter = function Greeter(firstName, lastName, language) {
-    return new Greeter.init(firstName, lastName, language);
-  };
+function getBundleURLCached() {
+  if (!bundleURL) {
+    bundleURL = getBundleURL();
+  }
 
-  var supportedLanguages = ["en", "es"];
-  var greetings = {
-    en: "Hello",
-    es: "Hola"
-  };
-  var formalGreetings = {
-    en: "Greetings",
-    es: "Saludos"
-  };
-  var loggMessages = {
-    en: "Logged in",
-    es: "incion session"
-  };
-  Greeter.prototype = {
-    fullName: function fullName() {
-      return this.firstName + " " + this.lastName;
-    },
-    validate: function validate() {
-      if (supportedLanguages.indexOf(this.language) === -1) {
-        throw "  Invalid language";
-      }
-    },
-    greeting: function greeting() {
-      return greetings[this.language] + ' ' + this.firstName + '!';
-    },
-    formalGreeting: function formalGreeting() {
-      return formalGreetings[this.language] + ', ' + this.fullName();
-    },
-    greet: function greet(formal) {
-      var msg;
+  return bundleURL;
+}
 
-      if (formal) {
-        msg = this.formalGreeting();
-      } else {
-        msg = this.greeting();
-      }
+function getBundleURL() {
+  // Attempt to find the URL of the current script and use that as the base URL
+  try {
+    throw new Error();
+  } catch (err) {
+    var matches = ('' + err.stack).match(/(https?|file|ftp|chrome-extension|moz-extension):\/\/[^)\n]+/g);
 
-      if (console) {
-        console.log(msg);
-      }
-
-      return this;
-    },
-    log: function log() {
-      if (console) {
-        console.log(loggMessages[this.language] + ": " + this.fullName());
-        return this;
-      }
-    },
-    setLang: function setLang(lang) {
-      this.language = lang;
-      this.validate();
-      return this;
-    },
-    HtmlGreeting: function HtmlGreeting(selector, formal) {
-      if (!$) {
-        throw "no jquery";
-      }
-
-      if (!selector) {
-        throw "Missing a selector";
-      }
-
-      var msg;
-
-      if (formal) {
-        msg = this.formalGreeting();
-      } else {
-        msg = this.greeting();
-      }
-
-      $(selector).html(msg);
-      return this;
+    if (matches) {
+      return getBaseURL(matches[0]);
     }
+  }
+
+  return '/';
+}
+
+function getBaseURL(url) {
+  return ('' + url).replace(/^((?:https?|file|ftp|chrome-extension|moz-extension):\/\/.+)?\/[^/]+(?:\?.*)?$/, '$1') + '/';
+}
+
+exports.getBundleURL = getBundleURLCached;
+exports.getBaseURL = getBaseURL;
+},{}],"C:/Users/pitrx/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/css-loader.js":[function(require,module,exports) {
+var bundle = require('./bundle-url');
+
+function updateLink(link) {
+  var newLink = link.cloneNode();
+
+  newLink.onload = function () {
+    link.remove();
   };
 
-  Greeter.init = function (firstName, lastName, language) {
-    var self = this;
-    self.firstName = firstName || "John";
-    self.lastName = lastName || "Doe";
-    self.language = language || "en";
-    self.validate();
-  };
+  newLink.href = link.href.split('?')[0] + '?' + Date.now();
+  link.parentNode.insertBefore(newLink, link.nextSibling);
+}
 
-  Greeter.init.prototype = Greeter.prototype;
-  global.Greeter = global.G$ = Greeter;
-})(window, $);
-},{}],"C:/Users/pitrx/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+var cssTimeout = null;
+
+function reloadCSS() {
+  if (cssTimeout) {
+    return;
+  }
+
+  cssTimeout = setTimeout(function () {
+    var links = document.querySelectorAll('link[rel="stylesheet"]');
+
+    for (var i = 0; i < links.length; i++) {
+      if (bundle.getBaseURL(links[i].href) === bundle.getBundleURL()) {
+        updateLink(links[i]);
+      }
+    }
+
+    cssTimeout = null;
+  }, 50);
+}
+
+module.exports = reloadCSS;
+},{"./bundle-url":"C:/Users/pitrx/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/bundle-url.js"}],"C:/Users/pitrx/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -417,5 +388,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["C:/Users/pitrx/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","Greeter.js"], null)
-//# sourceMappingURL=/Greeter.65e7ab59.js.map
+},{}]},{},["C:/Users/pitrx/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js"], null)
+//# sourceMappingURL=/index.js.map

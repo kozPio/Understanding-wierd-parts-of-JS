@@ -4,7 +4,8 @@
 <head>
 
   <title>Document</title>
-</head>
+  <link rel="stylesheet" href="/popup.bc5f663e.css">
+<script src="/popup.bc5f663e.js"></script></head>
 
 <body>
   <div id="logindiv">
@@ -16,10 +17,35 @@
 
   </div>
   <h1 id="greeting"></h1>
+  <input style="height: 30vh; width: 70vw ;" id="text">
+  <button id="button">Compile</button>
+  <button data-modal-target="#modal">Open Modal</button>
+  <div class="modal" id="modal">
+    <div class="headerModal">
+      <button data-close-button="" class="closeModal">&times;</button>
+    </div>
+    <div class="bodyModal">
+      
+    </div>
   
+  </div>
+  <table id="table">
+    <tr>
+      <th>word</th>
+      <th>kana</th>
+      <th>meaning</th>
+      <th>sentence</th>
+      <th>sentence with kana</th>
+      <th>occured</th>
+    </tr>
+    
+  </table>
+  <div id="overlay"></div>
+
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="/Greeter.65e7ab59.js"></script>
   <script src="/app.c328ef1a.js"></script>
+  
 </body>
 
 </html>
