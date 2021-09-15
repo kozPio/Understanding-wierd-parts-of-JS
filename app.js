@@ -14,18 +14,25 @@ import { fullDictionary, sixThousndMostCommon, translation } from "./text";
    loginGrter.setLang($('#lang').val()).HtmlGreeting('#greeting', true).log();
  })
 
-const openModalButtons = document.querySelectorAll('[data-modal-target]')
+const generateClipboardText = document.querySelector('#generateClipboardText')
 const closeModalButton = document.querySelectorAll('[data-close-button]')
 const overlay = document.getElementById('overlay');
 
 
+let interval = null;
 
-openModalButtons.forEach((button)=> {
-  button.addEventListener('click', () => {
-    const modal = document.querySelector(button.dataset.modalTarget)
-    openModal(modal);
+  generateClipboardText.addEventListener('click', () => {
+    if(interval) {
+      clearInterval(interval)
+      interval = null;
+    }else{
+      interval = setInterval(readClipboard, 5000)
+    }
   })
-});
+
+
+
+
 
 overlay.addEventListener('click', ()=> {
   const modals = document.querySelectorAll('.modal.active');
@@ -83,6 +90,12 @@ for (let i=0; i< dictionaryArray.length; i+=7){
 }
 
 
+finalArray = finalArray.sort((a, b)=> {
+  return b.char.length - a.char.length
+})
+
+
+
 // for(let i=0; i< finalArray.length; i++){
 //   for(let j=0; j< listOfChars.length; j++){
 //     if(finalArray[i].char === listOfChars[j].cahr){
@@ -128,9 +141,14 @@ for (let i=0; i< dictionaryArray.length; i+=7){
 // }
 
 
-
-document.getElementById('button').addEventListener('click', () =>{
-  let textValue =document.getElementById('text').value
+let generateTranslation = function(text) {
+  let textValue = null;
+  if(text){
+    textValue = text;
+  }else{
+    textValue =document.getElementById('text').value
+  }
+  
   
   let charsInText = findTranslations(textValue);
 
@@ -139,14 +157,36 @@ document.getElementById('button').addEventListener('click', () =>{
 
 
   createDescriptions(sortedChars);
+}
+
+document.getElementById('button').addEventListener('click', () =>{
   
-})
+  generateTranslation();
+});
+
+let previousClipboardText = '';
+
+
+function readClipboard() {
+  theClipboard.readText().then(clipText =>{
+    if(clipText === previousClipboardText) {
+      return
+    }
+    console.log('changed')
+    document.querySelector('#text').innerHTML = clipText;
+    generateTranslation(clipText);
+    previousClipboardText = clipText;
+  })
+  
+  
+}
 
 
 function findTranslations(text) {
   let outputArray = []
   let tempText = text;
   let placeholder = '';
+
   for(let i = 0; i < finalArray.length; i++) {
      let length =finalArray[i].char.length
       let index = tempText.indexOf(finalArray[i].char);
@@ -154,7 +194,7 @@ function findTranslations(text) {
         outputArray.push({...finalArray[i], index})
         placeholder =generatePlaceHolder(length)
         tempText = tempText.replace(finalArray[i].char, placeholder)
-        console.log(tempText)
+        i = 0;
       }   
   }
   
@@ -187,15 +227,32 @@ for(let i=0; i <arrOfChars.length; i++){
   let inside = `
   <p>${arrOfChars[i].char}</p>
   `
+  let insideTableHead =`
+    <th>word</th>
+    <th>kana</th>
+    <th>meaning</th>
+    <th>sentence</th>
+    <th>sentence with kana</th>
+  `
 
+  let insideOfTable= 
+  `
+   <tr>
+      <td class="table-td" >${arrOfChars[i].char}</td>
+      <td class="table-td">${arrOfChars[i].kana}</td>
+      <td class="table-td">${arrOfChars[i].meaning}</td>
+      <td class="table-td">${arrOfChars[i].sentence}</td>
+      <td class="table-td">${arrOfChars[i].sentenceKana}</td>
+   </tr>
+  `
   let insideOfModule= `
-  <tr>
-      <td>${arrOfChars[i].char}</td>
-      <td>${arrOfChars[i].kana}</td>
-      <td>${arrOfChars[i].meaning}</td>
-      <td>${arrOfChars[i].sentence}</td>
-      <td>${arrOfChars[i].sentenceKana}</td>
-  </tr>
+  <div class="bodyModal-div">
+      <p class="bodyModal-p">Char: ${arrOfChars[i].char}</p>
+      <p class="bodyModal-p">Kana: ${arrOfChars[i].kana}</p>
+      <p class="bodyModal-p">Meaning: ${arrOfChars[i].meaning}</p>
+      <p class="bodyModal-p">Sentence: ${arrOfChars[i].sentence}</p>
+      <p class="bodyModal-p">KanaSentence: ${arrOfChars[i].sentenceKana}</p>
+  </div>
   `
 
   div.innerHTML = inside;
@@ -203,20 +260,28 @@ for(let i=0; i <arrOfChars.length; i++){
     openModal(modal, insideOfModule)
   })
   updatedSentence.appendChild(div)
-  moduleArray.push({inside: insideOfModule, association: arrOfChars[i].char })
+  if (moduleArray.some(e => e.association === arrOfChars[i].char)) {
+    null
+  }else {
+    moduleArray.push({inside: insideOfTable, insideHead: insideTableHead, association: arrOfChars[i].char })
+  }
+  
 }
- document.getElementById('logindiv').appendChild(updatedSentence);
+ document.getElementById('displayText').innerHTML = '';
+ document.getElementById('displayText').appendChild(updatedSentence);
+ document.querySelector('#tableBody').innerHTML = '';
  for(let i = 0; i<moduleArray.length; i++){
   let tr = document.createElement('tr');
-  
-  tr.innerHTML= moduleArray[i].inside;
-  console.log(tr);
-  document.querySelector('#table').appendChild(tr);
+  tr.innerHTML= moduleArray[i].inside; 
+  document.querySelector('#tableBody').appendChild(tr); 
   }
+  let tr2 = document.createElement('tr');
+  tr2.innerHTML =  moduleArray[i].insideHead;
+  document.querySelector('#tableHead').innerHTML = '';
+  document.querySelector('#table').appendChild(tr2);
 
 }
-
- 
+let theClipboard = navigator.clipboard;
 
 
 

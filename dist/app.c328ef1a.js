@@ -150,14 +150,17 @@ $("#login").click(function () {
   $("#logindiv").hide();
   loginGrter.setLang($('#lang').val()).HtmlGreeting('#greeting', true).log();
 });
-var openModalButtons = document.querySelectorAll('[data-modal-target]');
+var generateClipboardText = document.querySelector('#generateClipboardText');
 var closeModalButton = document.querySelectorAll('[data-close-button]');
 var overlay = document.getElementById('overlay');
-openModalButtons.forEach(function (button) {
-  button.addEventListener('click', function () {
-    var modal = document.querySelector(button.dataset.modalTarget);
-    openModal(modal);
-  });
+var interval = null;
+generateClipboardText.addEventListener('click', function () {
+  if (interval) {
+    clearInterval(interval);
+    interval = null;
+  } else {
+    interval = setInterval(readClipboard, 5000);
+  }
 });
 overlay.addEventListener('click', function () {
   var modals = document.querySelectorAll('.modal.active');
@@ -193,16 +196,20 @@ var dictionaryArray = _text.fullDictionary.split(/\t|\n/);
 
 var finalArray = [];
 
-for (var i = 0; i < dictionaryArray.length; i += 7) {
+for (var _i = 0; _i < dictionaryArray.length; _i += 7) {
   var word = {};
-  word.char = dictionaryArray[i];
-  word.kana = dictionaryArray[i + 1];
-  word.meaning = dictionaryArray[i + 2];
-  word.sentence = dictionaryArray[i + 5];
-  word.sentenceKana = dictionaryArray[i + 6];
+  word.char = dictionaryArray[_i];
+  word.kana = dictionaryArray[_i + 1];
+  word.meaning = dictionaryArray[_i + 2];
+  word.sentence = dictionaryArray[_i + 5];
+  word.sentenceKana = dictionaryArray[_i + 6];
   word.occur = 0;
   finalArray.push(word);
-} // for(let i=0; i< finalArray.length; i++){
+}
+
+finalArray = finalArray.sort(function (a, b) {
+  return b.char.length - a.char.length;
+}); // for(let i=0; i< finalArray.length; i++){
 //   for(let j=0; j< listOfChars.length; j++){
 //     if(finalArray[i].char === listOfChars[j].cahr){
 //       finalArray[i].occur = listOfChars[j].occur
@@ -233,32 +240,56 @@ for (var i = 0; i < dictionaryArray.length; i += 7) {
 //   document.querySelector('#table').appendChild(tr);
 // }
 
+var generateTranslation = function generateTranslation(text) {
+  var textValue = null;
 
-document.getElementById('button').addEventListener('click', function () {
-  var textValue = document.getElementById('text').value;
+  if (text) {
+    textValue = text;
+  } else {
+    textValue = document.getElementById('text').value;
+  }
+
   var charsInText = findTranslations(textValue);
   var sortedChars = charsInText.sort(function (a, b) {
     return a.index - b.index;
   });
   createDescriptions(sortedChars);
+};
+
+document.getElementById('button').addEventListener('click', function () {
+  generateTranslation();
 });
+var previousClipboardText = '';
+
+function readClipboard() {
+  theClipboard.readText().then(function (clipText) {
+    if (clipText === previousClipboardText) {
+      return;
+    }
+
+    console.log('changed');
+    document.querySelector('#text').innerHTML = clipText;
+    generateTranslation(clipText);
+    previousClipboardText = clipText;
+  });
+}
 
 function findTranslations(text) {
   var outputArray = [];
   var tempText = text;
   var placeholder = '';
 
-  for (var _i = 0; _i < finalArray.length; _i++) {
-    var length = finalArray[_i].char.length;
-    var index = tempText.indexOf(finalArray[_i].char);
+  for (var _i2 = 0; _i2 < finalArray.length; _i2++) {
+    var length = finalArray[_i2].char.length;
+    var index = tempText.indexOf(finalArray[_i2].char);
 
     if (index !== -1) {
-      outputArray.push(_objectSpread(_objectSpread({}, finalArray[_i]), {}, {
+      outputArray.push(_objectSpread(_objectSpread({}, finalArray[_i2]), {}, {
         index: index
       }));
       placeholder = generatePlaceHolder(length);
-      tempText = tempText.replace(finalArray[_i].char, placeholder);
-      console.log(tempText);
+      tempText = tempText.replace(finalArray[_i2].char, placeholder);
+      _i2 = 0;
     }
   }
 
@@ -269,7 +300,7 @@ function findTranslations(text) {
 function generatePlaceHolder(num) {
   var placeholder = '';
 
-  for (var _i2 = 0; _i2 < num; _i2++) {
+  for (var _i3 = 0; _i3 < num; _i3++) {
     placeholder = placeholder.concat('', '_');
   }
 
@@ -284,34 +315,52 @@ function createDescriptions(arrOfChars) {
   updatedSentence.classList.add('sentence');
   var modal = document.querySelector('.modal');
 
-  var _loop = function _loop(_i3) {
+  var _loop = function _loop(_i4) {
     var div = document.createElement('div');
-    var inside = "\n  <p>".concat(arrOfChars[_i3].char, "</p>\n  ");
-    var insideOfModule = "\n  <tr>\n      <td>".concat(arrOfChars[_i3].char, "</td>\n      <td>").concat(arrOfChars[_i3].kana, "</td>\n      <td>").concat(arrOfChars[_i3].meaning, "</td>\n      <td>").concat(arrOfChars[_i3].sentence, "</td>\n      <td>").concat(arrOfChars[_i3].sentenceKana, "</td>\n  </tr>\n  ");
+    var inside = "\n  <p>".concat(arrOfChars[_i4].char, "</p>\n  ");
+    var insideTableHead = "\n    <th>word</th>\n    <th>kana</th>\n    <th>meaning</th>\n    <th>sentence</th>\n    <th>sentence with kana</th>\n  ";
+    var insideOfTable = "\n   <tr>\n      <td class=\"table-td\" >".concat(arrOfChars[_i4].char, "</td>\n      <td class=\"table-td\">").concat(arrOfChars[_i4].kana, "</td>\n      <td class=\"table-td\">").concat(arrOfChars[_i4].meaning, "</td>\n      <td class=\"table-td\">").concat(arrOfChars[_i4].sentence, "</td>\n      <td class=\"table-td\">").concat(arrOfChars[_i4].sentenceKana, "</td>\n   </tr>\n  ");
+    var insideOfModule = "\n  <div class=\"bodyModal-div\">\n      <p class=\"bodyModal-p\">Char: ".concat(arrOfChars[_i4].char, "</p>\n      <p class=\"bodyModal-p\">Kana: ").concat(arrOfChars[_i4].kana, "</p>\n      <p class=\"bodyModal-p\">Meaning: ").concat(arrOfChars[_i4].meaning, "</p>\n      <p class=\"bodyModal-p\">Sentence: ").concat(arrOfChars[_i4].sentence, "</p>\n      <p class=\"bodyModal-p\">KanaSentence: ").concat(arrOfChars[_i4].sentenceKana, "</p>\n  </div>\n  ");
     div.innerHTML = inside;
     div.addEventListener('click', function () {
       openModal(modal, insideOfModule);
     });
     updatedSentence.appendChild(div);
-    moduleArray.push({
-      inside: insideOfModule,
-      association: arrOfChars[_i3].char
-    });
+
+    if (moduleArray.some(function (e) {
+      return e.association === arrOfChars[_i4].char;
+    })) {
+      null;
+    } else {
+      moduleArray.push({
+        inside: insideOfTable,
+        insideHead: insideTableHead,
+        association: arrOfChars[_i4].char
+      });
+    }
   };
 
-  for (var _i3 = 0; _i3 < arrOfChars.length; _i3++) {
-    _loop(_i3);
+  for (var _i4 = 0; _i4 < arrOfChars.length; _i4++) {
+    _loop(_i4);
   }
 
-  document.getElementById('logindiv').appendChild(updatedSentence);
+  document.getElementById('displayText').innerHTML = '';
+  document.getElementById('displayText').appendChild(updatedSentence);
+  document.querySelector('#tableBody').innerHTML = '';
 
-  for (var _i4 = 0; _i4 < moduleArray.length; _i4++) {
+  for (var _i5 = 0; _i5 < moduleArray.length; _i5++) {
     var tr = document.createElement('tr');
-    tr.innerHTML = moduleArray[_i4].inside;
-    console.log(tr);
-    document.querySelector('#table').appendChild(tr);
+    tr.innerHTML = moduleArray[_i5].inside;
+    document.querySelector('#tableBody').appendChild(tr);
   }
-} //
+
+  var tr2 = document.createElement('tr');
+  tr2.innerHTML = moduleArray[i].insideHead;
+  document.querySelector('#tableHead').innerHTML = '';
+  document.querySelector('#table').appendChild(tr2);
+}
+
+var theClipboard = navigator.clipboard; //
 // let listOfChars= [{cahr: "これ", occur: 223, index: 4}
 // ,{cahr: "あれ", occur: 27, index: 6}
 // ,{cahr: "先", occur: 99, index: 7}
@@ -596,7 +645,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58672" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60813" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

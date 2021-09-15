@@ -14,12 +14,13 @@
       <option value="es">Spanish</option>
     </select>
     <input type="button" value="Login" id="login">
+    <div id="displayText"></div>
 
   </div>
   <h1 id="greeting"></h1>
-  <input style="height: 30vh; width: 70vw ;" id="text">
-  <button id="button">Compile</button>
-  <button data-modal-target="#modal">Open Modal</button>
+  <textarea class="text-area" id="text">
+  </textarea><button style="margin-right: 20px;" id="button">Compile</button>
+  <button id="generateClipboardText">Start/Stop reading from clipboard</button>
   <div class="modal" id="modal">
     <div class="headerModal">
       <button data-close-button="" class="closeModal">&times;</button>
@@ -30,13 +31,11 @@
   
   </div>
   <table id="table">
-    <tr>
-      <th>word</th>
-      <th>kana</th>
-      <th>meaning</th>
-      <th>sentence</th>
-      <th>sentence with kana</th>
-      <th>occured</th>
+    <tr id="tableHead">
+     
+    </tr>
+    <tr id="tableBody">
+     
     </tr>
     
   </table>
