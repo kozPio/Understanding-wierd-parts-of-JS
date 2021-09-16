@@ -205,7 +205,8 @@ for (var i = 0; i < dictionaryArray.length; i += 7) {
   word.sentenceKana = dictionaryArray[i + 6];
   word.occur = 0;
   finalArray.push(word);
-}
+} // New Dictionary
+
 
 finalArray = finalArray.sort(function (a, b) {
   return b.char.length - a.char.length;
@@ -274,25 +275,51 @@ function readClipboard() {
   });
 }
 
+function splitChar(char, num) {
+  var arr = [];
+
+  if (num === 3 || num === 4) {
+    arr.push(char);
+    arr.push(char.substring(0, num - 1));
+  } else {
+    arr.push(char);
+  }
+
+  return arr;
+}
+
 function findTranslations(text) {
   var outputArray = [];
   var tempText = text;
-  var placeholder = '';
+  var placeholder = ''; // let index = -1;
 
   for (var _i = 0; _i < finalArray.length; _i++) {
     var length = finalArray[_i].char.length;
-    var index = tempText.indexOf(finalArray[_i].char);
+    var charArr = splitChar(finalArray[_i].char, length);
 
-    if (index !== -1) {
-      outputArray.push(_objectSpread(_objectSpread({}, finalArray[_i]), {}, {
-        index: index
-      }));
-      placeholder = generatePlaceHolder(length);
-      tempText = tempText.replace(finalArray[_i].char, placeholder);
-      _i = 0;
-    }
+    for (var j = 0; j < charArr.length; j++) {
+      var index = tempText.indexOf(charArr[j]);
+
+      if (index > -1) {
+        outputArray.push(_objectSpread(_objectSpread({}, finalArray[_i]), {}, {
+          index: index
+        }));
+        placeholder = generatePlaceHolder(length);
+        console.log(finalArray[_i].char);
+
+        if (j === 0) {
+          placeholder = generatePlaceHolder(length);
+          tempText = tempText.replace(charArr[0], placeholder);
+        } else {
+          placeholder = generatePlaceHolder(length - 1);
+          tempText = tempText.replace(charArr[1], placeholder);
+        }
+      }
+    } // i=0
+
   }
 
+  console.log(tempText);
   console.log(outputArray);
   return outputArray;
 }
@@ -643,7 +670,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60813" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54779" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

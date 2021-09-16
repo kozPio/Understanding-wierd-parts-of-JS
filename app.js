@@ -1,5 +1,6 @@
 import { fullDictionary, sixThousndMostCommon, translation } from "./text";
 
+
  var g = G$("John" , "Doe");
  
 
@@ -21,7 +22,9 @@ const overlay = document.getElementById('overlay');
 
 let interval = null;
 
-  generateClipboardText.addEventListener('click', () => {
+  generateClipboardText.addEventListener('click',  ()  => {
+
+    
     if(interval) {
       clearInterval(interval)
       interval = null;
@@ -31,6 +34,10 @@ let interval = null;
   })
 
 
+
+
+
+  
 
 
 
@@ -88,6 +95,13 @@ for (let i=0; i< dictionaryArray.length; i+=7){
 
   finalArray.push(word)
 }
+
+
+
+
+// New Dictionary
+
+
 
 
 finalArray = finalArray.sort((a, b)=> {
@@ -182,23 +196,56 @@ function readClipboard() {
 }
 
 
+
+function splitChar (char, num) {
+  let arr = [];
+  if(num === 3 || num === 4){
+    arr.push(char);
+    arr.push(char.substring(0, num-1))
+  }else {
+    arr.push(char)
+  }
+  
+
+  return arr
+}
+
+
+
 function findTranslations(text) {
   let outputArray = []
   let tempText = text;
   let placeholder = '';
-
+  // let index = -1;
+  
+  
   for(let i = 0; i < finalArray.length; i++) {
-     let length =finalArray[i].char.length
-      let index = tempText.indexOf(finalArray[i].char);
-      if(index !== -1){
+    let length =finalArray[i].char.length
+    let charArr = splitChar(finalArray[i].char ,length);
+
+    for(let j = 0; j<charArr.length; j++){
+      let index =tempText.indexOf(charArr[j]) 
+      if(index > -1){
         outputArray.push({...finalArray[i], index})
         placeholder =generatePlaceHolder(length)
-        tempText = tempText.replace(finalArray[i].char, placeholder)
-        i = 0;
-      }   
+        console.log(finalArray[i].char)
+        if(j ===0){
+          placeholder =generatePlaceHolder(length)
+          tempText = tempText.replace(charArr[0], placeholder);
+        }else{
+          placeholder =generatePlaceHolder(length-1)
+          tempText = tempText.replace(charArr[1], placeholder);
+        }
+        
+        
+      }
+    }
+    
+    // i=0
+     
   }
   
-  
+  console.log(tempText)
   console.log(outputArray)
   return outputArray
   
