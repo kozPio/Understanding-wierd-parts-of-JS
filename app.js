@@ -26,7 +26,7 @@ let interval = null;
       clearInterval(interval)
       interval = null;
     }else{
-      interval = setInterval(readClipboard, 5000)
+      interval = setInterval(readClipboard, 2000)
     }
   })
 
@@ -218,32 +218,31 @@ let moduleArray= []
 
 function createDescriptions(arrOfChars) {
   let updatedSentence = document.createElement('div');
-
+  moduleArray = [];
   updatedSentence.classList.add('sentence');
   const modal = document.querySelector('.modal');
+  let insideTableHead =`
+  <th>word</th>
+  <th>kana</th>
+  <th>meaning</th>
+  <th>sentence</th>
+  <th>sentence with kana</th>
+`
 for(let i=0; i <arrOfChars.length; i++){
   let div = document.createElement('div');
   
   let inside = `
   <p>${arrOfChars[i].char}</p>
   `
-  let insideTableHead =`
-    <th>word</th>
-    <th>kana</th>
-    <th>meaning</th>
-    <th>sentence</th>
-    <th>sentence with kana</th>
-  `
+ 
 
   let insideOfTable= 
   `
-   <tr>
       <td class="table-td" >${arrOfChars[i].char}</td>
       <td class="table-td">${arrOfChars[i].kana}</td>
       <td class="table-td">${arrOfChars[i].meaning}</td>
       <td class="table-td">${arrOfChars[i].sentence}</td>
       <td class="table-td">${arrOfChars[i].sentenceKana}</td>
-   </tr>
   `
   let insideOfModule= `
   <div class="bodyModal-div">
@@ -263,22 +262,24 @@ for(let i=0; i <arrOfChars.length; i++){
   if (moduleArray.some(e => e.association === arrOfChars[i].char)) {
     null
   }else {
-    moduleArray.push({inside: insideOfTable, insideHead: insideTableHead, association: arrOfChars[i].char })
+    moduleArray.push({inside: insideOfTable, association: arrOfChars[i].char })
   }
   
 }
+  
  document.getElementById('displayText').innerHTML = '';
  document.getElementById('displayText').appendChild(updatedSentence);
- document.querySelector('#tableBody').innerHTML = '';
+ document.querySelector('#table').innerHTML = '';
+ let tr2 = document.createElement('tr');
+ tr2.innerHTML =  insideTableHead;
+ document.querySelector('#table').appendChild(tr2);
  for(let i = 0; i<moduleArray.length; i++){
   let tr = document.createElement('tr');
   tr.innerHTML= moduleArray[i].inside; 
-  document.querySelector('#tableBody').appendChild(tr); 
+  document.querySelector('#table').appendChild(tr); 
   }
-  let tr2 = document.createElement('tr');
-  tr2.innerHTML =  moduleArray[i].insideHead;
-  document.querySelector('#tableHead').innerHTML = '';
-  document.querySelector('#table').appendChild(tr2);
+  
+  
 
 }
 let theClipboard = navigator.clipboard;

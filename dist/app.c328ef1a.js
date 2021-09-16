@@ -159,7 +159,7 @@ generateClipboardText.addEventListener('click', function () {
     clearInterval(interval);
     interval = null;
   } else {
-    interval = setInterval(readClipboard, 5000);
+    interval = setInterval(readClipboard, 2000);
   }
 });
 overlay.addEventListener('click', function () {
@@ -196,13 +196,13 @@ var dictionaryArray = _text.fullDictionary.split(/\t|\n/);
 
 var finalArray = [];
 
-for (var _i = 0; _i < dictionaryArray.length; _i += 7) {
+for (var i = 0; i < dictionaryArray.length; i += 7) {
   var word = {};
-  word.char = dictionaryArray[_i];
-  word.kana = dictionaryArray[_i + 1];
-  word.meaning = dictionaryArray[_i + 2];
-  word.sentence = dictionaryArray[_i + 5];
-  word.sentenceKana = dictionaryArray[_i + 6];
+  word.char = dictionaryArray[i];
+  word.kana = dictionaryArray[i + 1];
+  word.meaning = dictionaryArray[i + 2];
+  word.sentence = dictionaryArray[i + 5];
+  word.sentenceKana = dictionaryArray[i + 6];
   word.occur = 0;
   finalArray.push(word);
 }
@@ -279,17 +279,17 @@ function findTranslations(text) {
   var tempText = text;
   var placeholder = '';
 
-  for (var _i2 = 0; _i2 < finalArray.length; _i2++) {
-    var length = finalArray[_i2].char.length;
-    var index = tempText.indexOf(finalArray[_i2].char);
+  for (var _i = 0; _i < finalArray.length; _i++) {
+    var length = finalArray[_i].char.length;
+    var index = tempText.indexOf(finalArray[_i].char);
 
     if (index !== -1) {
-      outputArray.push(_objectSpread(_objectSpread({}, finalArray[_i2]), {}, {
+      outputArray.push(_objectSpread(_objectSpread({}, finalArray[_i]), {}, {
         index: index
       }));
       placeholder = generatePlaceHolder(length);
-      tempText = tempText.replace(finalArray[_i2].char, placeholder);
-      _i2 = 0;
+      tempText = tempText.replace(finalArray[_i].char, placeholder);
+      _i = 0;
     }
   }
 
@@ -300,7 +300,7 @@ function findTranslations(text) {
 function generatePlaceHolder(num) {
   var placeholder = '';
 
-  for (var _i3 = 0; _i3 < num; _i3++) {
+  for (var _i2 = 0; _i2 < num; _i2++) {
     placeholder = placeholder.concat('', '_');
   }
 
@@ -312,15 +312,16 @@ var moduleArray = [];
 
 function createDescriptions(arrOfChars) {
   var updatedSentence = document.createElement('div');
+  moduleArray = [];
   updatedSentence.classList.add('sentence');
   var modal = document.querySelector('.modal');
+  var insideTableHead = "\n  <th>word</th>\n  <th>kana</th>\n  <th>meaning</th>\n  <th>sentence</th>\n  <th>sentence with kana</th>\n";
 
-  var _loop = function _loop(_i4) {
+  var _loop = function _loop(_i3) {
     var div = document.createElement('div');
-    var inside = "\n  <p>".concat(arrOfChars[_i4].char, "</p>\n  ");
-    var insideTableHead = "\n    <th>word</th>\n    <th>kana</th>\n    <th>meaning</th>\n    <th>sentence</th>\n    <th>sentence with kana</th>\n  ";
-    var insideOfTable = "\n   <tr>\n      <td class=\"table-td\" >".concat(arrOfChars[_i4].char, "</td>\n      <td class=\"table-td\">").concat(arrOfChars[_i4].kana, "</td>\n      <td class=\"table-td\">").concat(arrOfChars[_i4].meaning, "</td>\n      <td class=\"table-td\">").concat(arrOfChars[_i4].sentence, "</td>\n      <td class=\"table-td\">").concat(arrOfChars[_i4].sentenceKana, "</td>\n   </tr>\n  ");
-    var insideOfModule = "\n  <div class=\"bodyModal-div\">\n      <p class=\"bodyModal-p\">Char: ".concat(arrOfChars[_i4].char, "</p>\n      <p class=\"bodyModal-p\">Kana: ").concat(arrOfChars[_i4].kana, "</p>\n      <p class=\"bodyModal-p\">Meaning: ").concat(arrOfChars[_i4].meaning, "</p>\n      <p class=\"bodyModal-p\">Sentence: ").concat(arrOfChars[_i4].sentence, "</p>\n      <p class=\"bodyModal-p\">KanaSentence: ").concat(arrOfChars[_i4].sentenceKana, "</p>\n  </div>\n  ");
+    var inside = "\n  <p>".concat(arrOfChars[_i3].char, "</p>\n  ");
+    var insideOfTable = "\n      <td class=\"table-td\" >".concat(arrOfChars[_i3].char, "</td>\n      <td class=\"table-td\">").concat(arrOfChars[_i3].kana, "</td>\n      <td class=\"table-td\">").concat(arrOfChars[_i3].meaning, "</td>\n      <td class=\"table-td\">").concat(arrOfChars[_i3].sentence, "</td>\n      <td class=\"table-td\">").concat(arrOfChars[_i3].sentenceKana, "</td>\n  ");
+    var insideOfModule = "\n  <div class=\"bodyModal-div\">\n      <p class=\"bodyModal-p\">Char: ".concat(arrOfChars[_i3].char, "</p>\n      <p class=\"bodyModal-p\">Kana: ").concat(arrOfChars[_i3].kana, "</p>\n      <p class=\"bodyModal-p\">Meaning: ").concat(arrOfChars[_i3].meaning, "</p>\n      <p class=\"bodyModal-p\">Sentence: ").concat(arrOfChars[_i3].sentence, "</p>\n      <p class=\"bodyModal-p\">KanaSentence: ").concat(arrOfChars[_i3].sentenceKana, "</p>\n  </div>\n  ");
     div.innerHTML = inside;
     div.addEventListener('click', function () {
       openModal(modal, insideOfModule);
@@ -328,36 +329,33 @@ function createDescriptions(arrOfChars) {
     updatedSentence.appendChild(div);
 
     if (moduleArray.some(function (e) {
-      return e.association === arrOfChars[_i4].char;
+      return e.association === arrOfChars[_i3].char;
     })) {
       null;
     } else {
       moduleArray.push({
         inside: insideOfTable,
-        insideHead: insideTableHead,
-        association: arrOfChars[_i4].char
+        association: arrOfChars[_i3].char
       });
     }
   };
 
-  for (var _i4 = 0; _i4 < arrOfChars.length; _i4++) {
-    _loop(_i4);
+  for (var _i3 = 0; _i3 < arrOfChars.length; _i3++) {
+    _loop(_i3);
   }
 
   document.getElementById('displayText').innerHTML = '';
   document.getElementById('displayText').appendChild(updatedSentence);
-  document.querySelector('#tableBody').innerHTML = '';
-
-  for (var _i5 = 0; _i5 < moduleArray.length; _i5++) {
-    var tr = document.createElement('tr');
-    tr.innerHTML = moduleArray[_i5].inside;
-    document.querySelector('#tableBody').appendChild(tr);
-  }
-
+  document.querySelector('#table').innerHTML = '';
   var tr2 = document.createElement('tr');
-  tr2.innerHTML = moduleArray[i].insideHead;
-  document.querySelector('#tableHead').innerHTML = '';
+  tr2.innerHTML = insideTableHead;
   document.querySelector('#table').appendChild(tr2);
+
+  for (var _i4 = 0; _i4 < moduleArray.length; _i4++) {
+    var tr = document.createElement('tr');
+    tr.innerHTML = moduleArray[_i4].inside;
+    document.querySelector('#table').appendChild(tr);
+  }
 }
 
 var theClipboard = navigator.clipboard; //
