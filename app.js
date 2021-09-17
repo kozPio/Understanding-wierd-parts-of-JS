@@ -216,23 +216,26 @@ function findTranslations(text) {
   let outputArray = []
   let tempText = text;
   let placeholder = '';
+  let leftoverWords = [];
   // let index = -1;
   
   
   for(let i = 0; i < finalArray.length; i++) {
     let length =finalArray[i].char.length
     let charArr = splitChar(finalArray[i].char ,length);
+    
 
     for(let j = 0; j<charArr.length; j++){
       let index =tempText.indexOf(charArr[j]) 
       if(index > -1){
-        outputArray.push({...finalArray[i], index})
+        //outputArray.push({...finalArray[i], index})
         placeholder =generatePlaceHolder(length)
-        console.log(finalArray[i].char)
         if(j ===0){
+          outputArray.push({...finalArray[i], index})
           placeholder =generatePlaceHolder(length)
           tempText = tempText.replace(charArr[0], placeholder);
         }else{
+          outputArray.push({...finalArray[i], index, j})
           placeholder =generatePlaceHolder(length-1)
           tempText = tempText.replace(charArr[1], placeholder);
         }
@@ -245,9 +248,14 @@ function findTranslations(text) {
      
   }
   
+  for(let n =0; n<tempText.length; n++){
+    if(tempText[n] !== '_'){
+      leftoverWords.push({index: n, char: tempText[n]})
+    }
+  }
+  let wholeSentence = outputArray.concat(leftoverWords)
   console.log(tempText)
-  console.log(outputArray)
-  return outputArray
+  return wholeSentence;
   
 }
 
@@ -262,10 +270,25 @@ function generatePlaceHolder(num) {
 
 
 let moduleArray= []
+let colorArray = ['red', 'blue', 'aqua', 'purple', 'crimson', 'orange'];
+
+function juggleColors(word, num) {
+
+  if(word){
+    if(num === 5){
+      num = 0;
+    } else{
+      num++;
+    }
+  }
+
+  return num 
+}
 
 function createDescriptions(arrOfChars) {
   let updatedSentence = document.createElement('div');
   moduleArray = [];
+  let x = 0;
   updatedSentence.classList.add('sentence');
   const modal = document.querySelector('.modal');
   let insideTableHead =`
@@ -277,40 +300,59 @@ function createDescriptions(arrOfChars) {
 `
 for(let i=0; i <arrOfChars.length; i++){
   let div = document.createElement('div');
-  
-  let inside = `
-  <p>${arrOfChars[i].char}</p>
-  `
- 
+  let inside = '';
 
-  let insideOfTable= 
-  `
-      <td class="table-td" >${arrOfChars[i].char}</td>
-      <td class="table-td">${arrOfChars[i].kana}</td>
-      <td class="table-td">${arrOfChars[i].meaning}</td>
-      <td class="table-td">${arrOfChars[i].sentence}</td>
-      <td class="table-td">${arrOfChars[i].sentenceKana}</td>
-  `
-  let insideOfModule= `
-  <div class="bodyModal-div">
-      <p class="bodyModal-p">Char: ${arrOfChars[i].char}</p>
-      <p class="bodyModal-p">Kana: ${arrOfChars[i].kana}</p>
-      <p class="bodyModal-p">Meaning: ${arrOfChars[i].meaning}</p>
-      <p class="bodyModal-p">Sentence: ${arrOfChars[i].sentence}</p>
-      <p class="bodyModal-p">KanaSentence: ${arrOfChars[i].sentenceKana}</p>
-  </div>
-  `
-
-  div.innerHTML = inside;
-  div.addEventListener('click', ()=> {
-    openModal(modal, insideOfModule)
-  })
-  updatedSentence.appendChild(div)
-  if (moduleArray.some(e => e.association === arrOfChars[i].char)) {
-    null
-  }else {
-    moduleArray.push({inside: insideOfTable, association: arrOfChars[i].char })
+  if(arrOfChars[i].j){
+    inside = `
+    <p ${arrOfChars[i].meaning && "style=' color: " + colorArray[x] + " ' "}>${arrOfChars[i].char.substring(0, arrOfChars[i].char.length-1)}</p>`
+    x =juggleColors(arrOfChars[i].meaning, x);
+  }else{
+    inside = `
+    <p ${arrOfChars[i].meaning && "style=' color:" + colorArray[x] + " ' " }>${arrOfChars[i].char}</p>
+    `
+    x =juggleColors(arrOfChars[i].meaning, x);
   }
+  
+  
+  div.innerHTML = inside;
+  if(arrOfChars[i].meaning) {
+    let y = x;
+    if(y === 0){
+      y= 5;
+    }else {
+      y-=1;
+    }
+    console.log(y)
+    
+    let insideOfTable= 
+    `
+        <td class="table-td" style=" color: ${colorArray[y]}">${arrOfChars[i].char}</td>
+        <td class="table-td" style=" color: ${colorArray[y]}">${arrOfChars[i].kana}</td>
+        <td class="table-td" style=" color: ${colorArray[y]}">${arrOfChars[i].meaning}</td>
+        <td class="table-td" style=" color: ${colorArray[y]}">${arrOfChars[i].sentence}</td>
+        <td class="table-td "style=" color: ${colorArray[y]}">${arrOfChars[i].sentenceKana}</td>
+    `
+    let insideOfModule= `
+    <div class="bodyModal-div">
+        <p class="bodyModal-p">Char: ${arrOfChars[i].char}</p>
+        <p class="bodyModal-p">Kana: ${arrOfChars[i].kana}</p>
+        <p class="bodyModal-p">Meaning: ${arrOfChars[i].meaning}</p>
+        <p class="bodyModal-p">Sentence: ${arrOfChars[i].sentence}</p>
+        <p class="bodyModal-p">KanaSentence: ${arrOfChars[i].sentenceKana}</p>
+    </div>
+    `
+    div.addEventListener('click', ()=> {
+      openModal(modal, insideOfModule)
+    })
+
+    if (moduleArray.some(e => e.association === arrOfChars[i].char)) {
+      null
+    }else {
+      moduleArray.push({inside: insideOfTable, association: arrOfChars[i].char })
+    }
+  }
+  
+  updatedSentence.appendChild(div);
   
 }
   

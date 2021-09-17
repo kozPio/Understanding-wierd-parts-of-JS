@@ -291,7 +291,8 @@ function splitChar(char, num) {
 function findTranslations(text) {
   var outputArray = [];
   var tempText = text;
-  var placeholder = ''; // let index = -1;
+  var placeholder = '';
+  var leftoverWords = []; // let index = -1;
 
   for (var _i = 0; _i < finalArray.length; _i++) {
     var length = finalArray[_i].char.length;
@@ -301,16 +302,20 @@ function findTranslations(text) {
       var index = tempText.indexOf(charArr[j]);
 
       if (index > -1) {
-        outputArray.push(_objectSpread(_objectSpread({}, finalArray[_i]), {}, {
-          index: index
-        }));
+        //outputArray.push({...finalArray[i], index})
         placeholder = generatePlaceHolder(length);
-        console.log(finalArray[_i].char);
 
         if (j === 0) {
+          outputArray.push(_objectSpread(_objectSpread({}, finalArray[_i]), {}, {
+            index: index
+          }));
           placeholder = generatePlaceHolder(length);
           tempText = tempText.replace(charArr[0], placeholder);
         } else {
+          outputArray.push(_objectSpread(_objectSpread({}, finalArray[_i]), {}, {
+            index: index,
+            j: j
+          }));
           placeholder = generatePlaceHolder(length - 1);
           tempText = tempText.replace(charArr[1], placeholder);
         }
@@ -319,9 +324,18 @@ function findTranslations(text) {
 
   }
 
+  for (var n = 0; n < tempText.length; n++) {
+    if (tempText[n] !== '_') {
+      leftoverWords.push({
+        index: n,
+        char: tempText[n]
+      });
+    }
+  }
+
+  var wholeSentence = outputArray.concat(leftoverWords);
   console.log(tempText);
-  console.log(outputArray);
-  return outputArray;
+  return wholeSentence;
 }
 
 function generatePlaceHolder(num) {
@@ -336,35 +350,71 @@ function generatePlaceHolder(num) {
 
 ;
 var moduleArray = [];
+var colorArray = ['red', 'blue', 'aqua', 'purple', 'crimson', 'orange'];
+
+function juggleColors(word, num) {
+  if (word) {
+    if (num === 5) {
+      num = 0;
+    } else {
+      num++;
+    }
+  }
+
+  return num;
+}
 
 function createDescriptions(arrOfChars) {
   var updatedSentence = document.createElement('div');
   moduleArray = [];
+  var x = 0;
   updatedSentence.classList.add('sentence');
   var modal = document.querySelector('.modal');
   var insideTableHead = "\n  <th>word</th>\n  <th>kana</th>\n  <th>meaning</th>\n  <th>sentence</th>\n  <th>sentence with kana</th>\n";
 
   var _loop = function _loop(_i3) {
     var div = document.createElement('div');
-    var inside = "\n  <p>".concat(arrOfChars[_i3].char, "</p>\n  ");
-    var insideOfTable = "\n      <td class=\"table-td\" >".concat(arrOfChars[_i3].char, "</td>\n      <td class=\"table-td\">").concat(arrOfChars[_i3].kana, "</td>\n      <td class=\"table-td\">").concat(arrOfChars[_i3].meaning, "</td>\n      <td class=\"table-td\">").concat(arrOfChars[_i3].sentence, "</td>\n      <td class=\"table-td\">").concat(arrOfChars[_i3].sentenceKana, "</td>\n  ");
-    var insideOfModule = "\n  <div class=\"bodyModal-div\">\n      <p class=\"bodyModal-p\">Char: ".concat(arrOfChars[_i3].char, "</p>\n      <p class=\"bodyModal-p\">Kana: ").concat(arrOfChars[_i3].kana, "</p>\n      <p class=\"bodyModal-p\">Meaning: ").concat(arrOfChars[_i3].meaning, "</p>\n      <p class=\"bodyModal-p\">Sentence: ").concat(arrOfChars[_i3].sentence, "</p>\n      <p class=\"bodyModal-p\">KanaSentence: ").concat(arrOfChars[_i3].sentenceKana, "</p>\n  </div>\n  ");
-    div.innerHTML = inside;
-    div.addEventListener('click', function () {
-      openModal(modal, insideOfModule);
-    });
-    updatedSentence.appendChild(div);
+    var inside = '';
 
-    if (moduleArray.some(function (e) {
-      return e.association === arrOfChars[_i3].char;
-    })) {
-      null;
+    if (arrOfChars[_i3].j) {
+      inside = "\n    <p ".concat(arrOfChars[_i3].meaning && "style=' color: " + colorArray[x] + " ' ", ">").concat(arrOfChars[_i3].char.substring(0, arrOfChars[_i3].char.length - 1), "</p>");
+      x = juggleColors(arrOfChars[_i3].meaning, x);
     } else {
-      moduleArray.push({
-        inside: insideOfTable,
-        association: arrOfChars[_i3].char
-      });
+      inside = "\n    <p ".concat(arrOfChars[_i3].meaning && "style=' color:" + colorArray[x] + " ' ", ">").concat(arrOfChars[_i3].char, "</p>\n    ");
+      x = juggleColors(arrOfChars[_i3].meaning, x);
     }
+
+    div.innerHTML = inside;
+
+    if (arrOfChars[_i3].meaning) {
+      var y = x;
+
+      if (y === 0) {
+        y = 5;
+      } else {
+        y -= 1;
+      }
+
+      console.log(y);
+      var insideOfTable = "\n        <td class=\"table-td\" style=\" color: ".concat(colorArray[y], "\">").concat(arrOfChars[_i3].char, "</td>\n        <td class=\"table-td\" style=\" color: ").concat(colorArray[y], "\">").concat(arrOfChars[_i3].kana, "</td>\n        <td class=\"table-td\" style=\" color: ").concat(colorArray[y], "\">").concat(arrOfChars[_i3].meaning, "</td>\n        <td class=\"table-td\" style=\" color: ").concat(colorArray[y], "\">").concat(arrOfChars[_i3].sentence, "</td>\n        <td class=\"table-td \"style=\" color: ").concat(colorArray[y], "\">").concat(arrOfChars[_i3].sentenceKana, "</td>\n    ");
+      var insideOfModule = "\n    <div class=\"bodyModal-div\">\n        <p class=\"bodyModal-p\">Char: ".concat(arrOfChars[_i3].char, "</p>\n        <p class=\"bodyModal-p\">Kana: ").concat(arrOfChars[_i3].kana, "</p>\n        <p class=\"bodyModal-p\">Meaning: ").concat(arrOfChars[_i3].meaning, "</p>\n        <p class=\"bodyModal-p\">Sentence: ").concat(arrOfChars[_i3].sentence, "</p>\n        <p class=\"bodyModal-p\">KanaSentence: ").concat(arrOfChars[_i3].sentenceKana, "</p>\n    </div>\n    ");
+      div.addEventListener('click', function () {
+        openModal(modal, insideOfModule);
+      });
+
+      if (moduleArray.some(function (e) {
+        return e.association === arrOfChars[_i3].char;
+      })) {
+        null;
+      } else {
+        moduleArray.push({
+          inside: insideOfTable,
+          association: arrOfChars[_i3].char
+        });
+      }
+    }
+
+    updatedSentence.appendChild(div);
   };
 
   for (var _i3 = 0; _i3 < arrOfChars.length; _i3++) {
